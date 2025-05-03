@@ -1,5 +1,6 @@
 ﻿namespace Binary_Serialization
 {
+    [Serializable]
     public class Person
     {
         public Person() { }

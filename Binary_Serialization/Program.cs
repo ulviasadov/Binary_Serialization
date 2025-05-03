@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Binary_Serialization
+﻿namespace Binary_Serialization
 {
     public class Program
     {
@@ -8,13 +6,21 @@ namespace Binary_Serialization
         {
             var person = new Person { Name = "Ulvi", Age = 24 };
 
-            string jsonString = JsonSerializer.Serialize(person);
-            File.WriteAllText("person.json", jsonString);
+            using (var stream = new FileStream("person.bin", FileMode.Create))
+            using (var writer = new BinaryWriter(stream))
+            {
+                writer.Write(person.Name);
+                writer.Write(person.Age);
+            }
 
-            string readJson = File.ReadAllText("person.json");
+            using (var stream = new FileStream("person.bin", FileMode.Open))
+            using (var reader = new BinaryReader(stream))
+            {
+                string name = reader.ReadString();
+                int age = reader.ReadInt32();
 
-            Person? deserialize = JsonSerializer.Deserialize<Person>(readJson);
-            Console.WriteLine($"Name: {deserialize?.Name} Age: {deserialize?.Age}");
+                Console.WriteLine($"Name: {name} Age: {age}");
+            }
         }
     }
 }
